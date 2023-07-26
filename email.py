@@ -3,12 +3,15 @@ import os
 from dotenv import load_dotenv
 from fastapi import FastAPI
 from pydantic import BaseModel
+import json
+
+openai.api_key='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'
+#COMPLETION_MODEL = "gpt-3.5-turbo-0613"
 
 # load_dotenv()
-# openai.api_key = os.getenv("OPENAI_API_KEY")
+openai.api_key = os.getenv("OPENAI_API_KEY")
 
 app = FastAPI()
-
 function_descriptions = [
     {
         "name": "extract_info_from_email",
@@ -70,13 +73,13 @@ response = openai.ChatCompletion.create(
     function_call="auto"
 )
 
-#print(response)
+print(response)
 
 response_message = response["choices"][0]["message"]
 function_arguments_str = response_message["function_call"]["arguments"]
 function_arguments = json.loads(function_arguments_str)
-
 print(function_arguments)
+
 class Email(BaseModel):
     from_email: str
     content: str
@@ -111,9 +114,8 @@ def analyse_email(email: Email):
         "companyName": companyName,
         "product": product,
         "amount": amount,
-        "priority": priority,
+         "priority": priority,
         "category": category,
         "nextStep": nextStep
     }
-
 

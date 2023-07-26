@@ -10,37 +10,46 @@ load_dotenv()
 openai.api_key = os.getenv("OPENAI_API_KEY")
 
 app = FastAPI()
-# ... (your other code)
 
-email = """
-Dear Jason 
-I hope this message finds you well. I'm Shirley from Gucci;
+# Define the function_descriptions outside of the scope of the routes
+function_descriptions = [
+    {
+        "name": "extract_info_from_email",
+        "description": "categorise & extract key info from an email, such as use case, company name, contact details, etc.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "companyName": {
+                    "type": "string",
+                    "description": "the name of the company that sent the email"
+                },
+                "product": {
+                    "type": "string",
+                    "description": "Try to identify which product the client is interested in, if any"
+                },
+                "amount":{
+                    "type": "string",
+                    "description": "Try to identify the amount of products the client wants to purchase, if any"
+                },
+                "category": {
+                    "type": "string",
+                    "description": "Try to categorise this email into categories like those: 1. Sales 2. customer support; 3. consulting; 4. partnership; etc."
+                },
+                "nextStep":{
+                    "type": "string",
+                    "description": "What is the suggested next step to move this forward?"
+                },
+                "priority": {
+                    "type": "string",
+                    "description": "Try to give a priority score to this email based on how likely this email will leads to a good business opportunity, from 0 to 10; 10 most important"
+                },
+            },
+            "required": ["companyName", "amount", "product", "priority", "category", "nextStep"]
+        }
+    }
+]
 
-I'm looking to purchase some company T-shirt for my team, we are a team of 100k people, and we want to get 2 t-shirt per personl
-
-Please let me know the price and timeline you can work with;
-
-Looking forward
-
-Shirley Lou
-"""
-
-prompt = f"Please extract key information from this email: {email} "
-message = [{"role": "user", "content": prompt}]
-
-response = openai.ChatCompletion.create(
-    model="gpt-4-0613",
-    messages=message,
-    functions=function_descriptions,
-    function_call="auto"
-)
-
-print(response)
-
-response_message = response["choices"][0]["message"]
-function_arguments_str = response_message["function_call"]["arguments"]
-function_arguments = json.loads(function_arguments_str)
-print(function_arguments)
+# ... (other code remains the same)
 
 class Email(BaseModel):
     from_email: str

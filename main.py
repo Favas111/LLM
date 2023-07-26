@@ -9,7 +9,7 @@ openai.api_key='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'
 #COMPLETION_MODEL = "gpt-3.5-turbo-0613"
 
 # load_dotenv()
-openai.api_key = os.getenv("OPENAI_API_KEY")
+#openai.api_key = os.getenv("OPENAI_API_KEY")
 
 app = FastAPI()
 function_descriptions = [

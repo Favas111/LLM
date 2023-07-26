@@ -49,8 +49,6 @@ function_descriptions = [
     }
 ]
 
-# ... (other code remains the same)
-
 class Email(BaseModel):
     from_email: str
     content: str
@@ -65,6 +63,13 @@ def analyse_email(email: Email):
     query = f"Please extract key information from this email: {content} "
 
     messages = [{"role": "user", "content": query}]
+
+    response = openai.ChatCompletion.create(
+        model="gpt-4-0613",
+        messages=messages,
+        functions=function_descriptions,
+        function_call="auto"
+    )
 
     response_message = response["choices"][0]["message"]
     function_arguments_str = response_message["function_call"]["arguments"]
@@ -85,3 +90,7 @@ def analyse_email(email: Email):
         "category": category,
         "nextStep": nextStep
     }
+
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run(app, host="0.0.0.0", port=10000)

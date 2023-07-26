@@ -5,6 +5,7 @@ from fastapi import FastAPI
 from pydantic import BaseModel
 import json
 
+
 #COMPLETION_MODEL = "gpt-3.5-turbo-0613"
 
 # load_dotenv()
@@ -102,12 +103,21 @@ def analyse_email(email: Email):
     )
 
     arguments = response.choices[0]["message"]["function_call"]["arguments"]
-    companyName = eval(arguments).get("companyName")
-    priority = eval(arguments).get("priority")
-    product = eval(arguments).get("product")
-    amount = eval(arguments).get("amount")
-    category = eval(arguments).get("category")
-    nextStep = eval(arguments).get("nextStep")
+    function_arguments_str = response_message["function_call"]["arguments"]
+    function_arguments = json.loads(function_arguments_str)
+
+    companyName = function_arguments.get("companyName")
+    priority = function_arguments.get("priority")
+    product = function_arguments.get("product")
+    amount = function_arguments.get("amount")
+    category = function_arguments.get("category")
+    nextStep = function_arguments.get("nextStep")
+    # companyName = eval(arguments).get("companyName")
+    # priority = eval(arguments).get("priority")
+    # product = eval(arguments).get("product")
+    # amount = eval(arguments).get("amount")
+    # category = eval(arguments).get("category")
+    # nextStep = eval(arguments).get("nextStep")
 
     return {
         "companyName": companyName,
